@@ -1,5 +1,5 @@
 # Crawler
-This is not cool crawler 
+This is cool crawler 
 
 1. pipenv shell
 2. pip install -r requirements.txt

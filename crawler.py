@@ -22,12 +22,33 @@ for l in li:
 
     soup = BeautifulSoup(loc_req.text)
     dir = os.path.abspath(os.curdir)
-    with open(dir+'/'+href.split('/')[-1]+'.txt','w') as f:
+    with open(dir+'/'+'file'+'.txt','a') as f:
         title = soup.find('div', {'class':'clearfix'}).find('h1').text
-        f.write(title + '\n')
+        f.write('URL: ' + href + '\n')
+        f.write('HEADER: ' + ''.join([c if c not in ['\n','\t'] else '' for c in title]) + '\n')
         ps = soup.find_all('p')
+        f.write('CONTENT: ')
         for p in ps:
-            f.write(p.text + '\n')
+            f.write(p.text + ' ')
+        f.write('\n')
+        try:
+            f.write('DATE: ' + ''.join([c if c not in ['\n','\t'] else '' for c in soup.find('div', {'class': 'node-meta__date'}).text]) + '\n')
+        except Exception as e:
+            f.write('DATE: ' + 'no date ' + '\n')
+        f.write('\n')
+        try:
+            tags = soup.find('div', {'class': 'block-atom-sidebar-taxonomy block block-atom-sidebar clearfix'})
+            content = tags.find('div', {'class': 'content'}).find_all('div', class_="title")
+            f.write('TAGS: ')
+            for tag in content:
+                te = tag.find('a').text
+                sp = tag.find('span').text
+                f.write(te + sp + ' ')
+            f.write('\n')
+        except Exception as e:
+            f.write('TAGS: ' + '\n')
+
+        f.write(''.join(['-' for i in range(50)]) + '\n')
 
     for x in soup.find_all('a'):
         if ':' in x['href']:
@@ -36,17 +57,33 @@ for l in li:
             continue
         mass.append(x['href'])
         try:
-            if not os.path.exists(dir+'/'+'files'+'/'):
-                os.makedirs(dir+'/'+'files'+'/')
-            name = ''.join(c if c not in ['/','?','='] else '' for c in x['href'][1:])
-            with open(dir+'/'+'files'+'/'+name+'.txt', 'w') as f1:
+            with open(dir+'/'+'file'+'.txt','a') as f:
                 ll_rec = requests.get(url_majors+x['href'], headers = header)
                 loc_soup = BeautifulSoup(ll_rec.text)
+                l_title = loc_soup.find('div', {'class':'clearfix'}).find('h1').text
+                f.write('URL: ' + x['href'] + '\n')
+                f.write('HEADER: ' + ''.join([c if c not in ['\n','\t'] else '' for c in title]) + '\n')
+                f.write('CONTENT: ')
                 for te in loc_soup.find_all('p'):
-                    f1.write(te.text + '\n')
+                    f.write(te.text + ' ')
+                f.write('\n')
+                try:
+                    f.write('DATE: ' + ''.join([c if c not in ['\n','\t'] else '' for c in loc_soup.find('div', {'class': 'node-meta__date'}).text]) + '\n')
+                except:
+                    f.write('DATE: ' + 'no Date ' + '\n')
                 # Теги
-                tags = loc_soup.find('div', {'class': 'block-atom-sidebar-taxonomy block block-atom-sidebar clearfix'})
-                content = tags.find('div', {'class': 'content'})
-                f1.write(content.text + '\n')
+                f.write('\n')
+                try:
+                    tags = loc_soup.find('div', {'class': 'block-atom-sidebar-taxonomy block block-atom-sidebar clearfix'})
+                    content = tags.find('div', {'class': 'content'}).find_all('div', class_="title")
+                    f.write('TAGS: ')
+                    for tag in content:
+                        te = tag.find('a').text
+                        sp = tag.find('span').text
+                        f.write(te + sp + ' ')
+                    f.write('\n')
+                except:
+                    f.write('TAGS: ' + '\n')
+                f.write(''.join(['-' for i in range(50)]) + '\n')
         except Exception as e:
             pass

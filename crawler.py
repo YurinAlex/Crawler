@@ -87,3 +87,11 @@ for l in li:
                 f.write(''.join(['-' for i in range(50)]) + '\n')
         except Exception as e:
             pass
+
+        try:
+            if elasticsearchCrawlerClient.contains(key):
+                pass
+            else:
+                elasticsearchCrawlerClient.put(key, data, date, tags)
+        except:
+            pass

@@ -59,7 +59,7 @@ def write_to_file(dir, link, _soup_):
             key_ = link
             data_ = data
             date_ = date
-            tags_ = ''.join([c for c in t])
+            tags_ = t
             if elasticsearchCrawlerClient.contains(key_):
                 pass
             else:

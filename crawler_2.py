@@ -68,14 +68,6 @@ def crawler():
                 write_to_file(dir, link, _soup_)
                 urls.append(link)
 
-                try:
-                    key, data, date, tags = ['', '', '', '']
-                    if elasticsearchCrawlerClient.contains(key):
-                        pass
-                    else:
-                        elasticsearchCrawlerClient.put(key, data, date, tags)
-                except:
-                    pass
 
 if __name__ == "__main__":
     crawler()

@@ -49,15 +49,6 @@ def crawler():
         # if len(urls) > 200:
         #     break
 
-        try:
-            key, data, date, tags = ['', '', '', '']
-            if elasticsearchCrawlerClient.contains(key):
-                pass
-            else:
-                elasticsearchCrawlerClient.put(key, data, date, tags)
-        except:
-            pass
-
         # находим ссылку
         for a in _soup.find_all('a'):
             if 'www' in a or ':' in a or 'http' in a:
@@ -85,6 +76,6 @@ def crawler():
                         elasticsearchCrawlerClient.put(key, data, date, tags)
                 except:
                     pass
-                    
+
 if __name__ == "__main__":
     crawler()

@@ -31,23 +31,38 @@ def write_to_file(dir, link, _soup_):
         f.write('CONTENT: ')
         f.write(data)
         # находим дату, если есть
+        date = ''
         try:
             date = ''.join([c if c not in ['\n','\t'] else '' for c in _soup_.find('div', {'class': 'node-meta__date'}).text])
-            f.write('DATE: ' + date + '\n')
         except Exception as e:
-            f.write('DATE: ' + 'no date ' + '\n')
+            date = 'no date '
+        f.write('DATE: ' + date + '\n')
         f.write('\n')
         # определяем тэги
         try:
             tags = _soup_.find('div', {'class': 'block-atom-sidebar-taxonomy block block-atom-sidebar clearfix'})
             content = tags.find('div', {'class': 'content'}).find_all('div', class_="title")
             f.write('TAGS: ')
+            t = []
             for tag in content:
                 te = tag.find('a').text
                 sp = tag.find('span').text
                 f.write(te + sp + ' ')
+                t.append(te + sp + ' ')
             f.write('\n')
         except Exception as e:
             f.write('TAGS: ' + '\n')
 
         f.write(''.join(['-' for i in range(50)]) + '\n')
+
+        try:
+            key_ = link
+            data_ = data
+            date_ = date
+            tags_ = ''.join([c for c in t])
+            if elasticsearchCrawlerClient.contains(key_):
+                pass
+            else:
+                elasticsearchCrawlerClient.put(key_, data_, date_, tags_)
+        except:
+            pass
